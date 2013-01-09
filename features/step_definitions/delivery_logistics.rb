@@ -4,10 +4,15 @@ When /^I add requested delivery logistics to an activity offering$/ do
                             :personnel_list => []
 end
 
-And /^I save and process the requested delivery logistics$/ do
-  #implemented with 'process' flag when delivery logistics created
+Then /^actual delivery logistics are created with the activity offering$/ do
+  step "the activity offering is updated when saved"
 end
 
-And /^actual delivery logistics are created with the activity offering$/ do
-  #actually checked in 'the activity offering is updated' step
+And /^I confirm that the activity offering is changed to "(.*?)"$/ do |aoState|
+  @course_offering = make CourseOffering
+  @course_offering.manage
+  on ManageCourseOfferings do |page|
+    page.ao_status(@activity_offering.code).should == aoState
+  end
+
 end

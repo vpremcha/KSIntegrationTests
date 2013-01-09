@@ -110,8 +110,8 @@ Then /^the activity offering is updated when saved$/ do
     page.seat_pool_count.should == @activity_offering.seat_pool_list.count.to_s
     page.seat_count_remaining.should == @activity_offering.seats_remaining.to_s
     page.course_url.should == @activity_offering.course_url
-    page.evaluation.should == @activity_offering.evaluation.to_s
-    page.honors.should == @activity_offering.honors_course.to_s
+    page.evaluation.should == @activity_offering.evaluation
+    page.honors.should == @activity_offering.honors_course
 
     page.home
   end

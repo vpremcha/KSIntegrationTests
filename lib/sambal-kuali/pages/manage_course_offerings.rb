@@ -16,7 +16,7 @@ class ManageCourseOfferings < BasePage
   action(:show) { |b| b.frm.button(text: "Show").click; sleep 2; b.loading.wait_while_present } # Persistent ID needed!
 
   value(:course_title) { |b| b.frm.div(id: "KS-CourseOfferingManagement-ActivityOfferingResultSection").h3(index: 0).text }
-  action(:edit_offering) { |b| b.frm.link(id: "u327").click; b.loading.wait_while_present } # Persistent ID needed!
+  action(:edit_offering) { |b| b.frm.link(text: "Edit").click; b.loading.wait_while_present } # Persistent ID needed!
 
   element(:format) { |b| b.frm.select(name: "formatIdForNewAO") }
   element(:activity_type) { |b| b.frm.select(name: "activityIdForNewAO") }
@@ -52,6 +52,10 @@ class ManageCourseOfferings < BasePage
     target_row(code).cells[AO_CODE].link.attribute_value("href").scan(/aoInfo.id=(.*)&dataObjectClassName/)[0][0]
   end
 
+  def ao_status(code)
+    target_row(code).cells[AO_STATUS].text
+  end
+
   def copy(code)
     target_row(code).link(text: "Copy").click
     loading.wait_while_present
@@ -82,6 +86,21 @@ class ManageCourseOfferings < BasePage
     end
   end
 
+  def ao_status(code, status)
+    retVal = false
+    row_text = target_row(code).text
+
+    if row_text.include? status
+      retVal = true
+    end
+    retVal
+  end
+
+  def ao_schedule_data(aoCode)
+     retVal = nil
+     retVal = target_row(aoCode).text
+  end
+
   def codes_list
     codes = []
     activity_offering_results_table.rows.each { |row| codes << row[AO_CODE].text }
@@ -90,4 +109,11 @@ class ManageCourseOfferings < BasePage
     codes
   end
 
+  def add_ao input_format, input_quantity
+    format.select(input_format)
+    loading.wait_while_present(120)
+    activity_type.select(activity_type.options[1].text)
+    quantity.set(input_quantity)
+    add
+  end
 end
